@@ -8,7 +8,6 @@ import re
 import chardet
 
 convertfiletypes = [
-  ".txt",
   ".h",
   ".c",
   ".cpp",
@@ -16,7 +15,7 @@ convertfiletypes = [
   ]
 
 target_encoding = 'utf-8'
-  
+
 def check_need_convert(filename):
     for filetype in convertfiletypes:
         if filename.lower().endswith(filetype):
@@ -24,17 +23,36 @@ def check_need_convert(filename):
     return False
 
 def convert_encoding_to_utf_8(filename):
+    '''
+    完成文件编码格式转换与 dos2unix 的功能
+    '''
+
     with open(filename, "rb") as f:
         codeType = chardet.detect(f.read())['encoding']
+    if None == codeType:
+        print("\r\nthe [ " + filename.split('\\')[-1] + " ] codeType is None, skip...")
+        return
+        
+    f = codecs.open(filename, 'r', codeType)
+    new_content = f.read()
+    
     if codeType != target_encoding:
         try:
             print("\r\nconvert [ " + filename.split('\\')[-1] + " ].....From " + codeType + " --> " + target_encoding)
-            f = codecs.open(filename, 'r', codeType)
-            new_content = f.read()
-            codecs.open(filename, 'w', target_encoding).write(new_content)
+            new_content = re.sub(r'\r\n', r'\n', new_content)
+            codecs.open(filename, 'wb', target_encoding).write(new_content)
         except IOError as err:
             print("I/O error: {0}".format(err))
-
+    elif re.findall(r'\r\n', new_content):
+        try:
+            print("\r\nexec [ " + filename.split('\\')[-1] + " ] dos2unix...")
+            new_content = re.sub(r'\r\n', r'\n', new_content)
+            codecs.open(filename, 'wb', codeType).write(new_content)
+        except IOError as err:
+            print("I/O error: {0}".format(err))
+    else:
+        print("\r\nthe [ " + filename.split('\\')[-1] + " ] is " + codeType + " type unix file")
+    
 def convert_dir(root_dir):
     if os.path.exists(root_dir) == False:
         print("[error] dir:",root_dir,"do not exit")
