@@ -177,6 +177,10 @@
 
 感觉写的不是不是特别好，希望解释清楚了，怎么从零开始生产这样一个示例工程的 makefile 文件。欢迎提出你的建议或疑问，谢谢大家阅读。
 
+完整的示例工程和 makefile 文件可以到如下路径取：
+
+	https://github.com/Lingminzou/code/tree/master/makefile/example
+
 扫码关注我了解更多有趣编程实例
 
 ![](http://wx1.sinaimg.cn/large/9e169b75gy1fqcisgsbd7j2076076q3e.jpg)
